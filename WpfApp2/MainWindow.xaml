@@ -84,7 +84,11 @@
                     Grid.ColumnSpan="4"
                     Margin="20,10">
             <TextBlock Text="Calculated income" />
-            <TextBlock Text="{Binding IncomeText}" TextWrapping="Wrap"  />
+            <TextBlock Text="{Binding IncomeText}"
+                       Foreground="DarkGreen"
+                       FontSize="14"
+                       FontWeight="Bold"
+                       TextWrapping="Wrap"  />
         </StackPanel>
         <StackPanel Orientation="Horizontal"
                     HorizontalAlignment="Center"

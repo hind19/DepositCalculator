@@ -183,7 +183,7 @@ namespace WPFClient.ViewModels
 
             var income = _depositCalculatorService.CalculateDepositIncome(_mapper.Map<DepositDto>(CurrentDeposit));
 
-            IncomeText = @$"You selected Deposit Plan '{CurrentDeposit.DepositPlan.Name}', Sum {CurrentDeposit.Sum} and Term {CurrentDeposit.Term}. 
+            IncomeText = @$"You selected Deposit Plan '{CurrentDeposit.DepositPlan.Name}', Sum {CurrentDeposit.Sum} {CurrentDeposit.Currency} and Term {CurrentDeposit.Term} months. 
 Your gross incom will be equal {income} {CurrentDeposit.Currency.ToString()}.
 Note:The calculation is approximate and may vary depending on exact date of deposit agreement and actual number of deposit term's days!";
         }
