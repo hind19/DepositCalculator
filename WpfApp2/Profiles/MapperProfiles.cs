@@ -15,11 +15,15 @@ namespace WPFClient.Profiles
 
         private void CreateMainVmProfiles()
         {
-            CreateMap<DepositDto, DepositModel>();
-            CreateMap<DepositPlanDto, DepositPlanModel>();
+            CreateMap<DepositDto, DepositModel>()
+                .ReverseMap();
+            CreateMap<DepositPlanDto, DepositPlanModel>().
+                ReverseMap();
+            CreateMap<Int32, Currencies>();
             CreateMap<Currencies, NameValuePair<int>>()
                 .ForMember(v => v.Value, o => o.MapFrom(x => x))
-                .ForMember(n => n.Name, o => o.MapFrom(x => x.ToString()));
+                .ForMember(n => n.Name, o => o.MapFrom(x => x.ToString()))
+                .ReverseMap();
         }
     }
 }

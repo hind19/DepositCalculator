@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using Application.Dtos;
+using Application.Interfaces;
 using AutoMapper;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -19,6 +20,10 @@ namespace WPFClient.ViewModels
         private DepositPlanModel _depositPlan;
         private ObservableCollection<NameValuePair<int>> _currencies;
         private DepositModel _currentDeposit;
+        private NameValuePair<int> _selectedCurrency;
+        private bool _capitalizedPayoutChecked;
+        private bool _monthlyPayoutChecked;
+        private string _incomeText;
         #endregion
 
         #region Constructors
@@ -34,6 +39,8 @@ namespace WPFClient.ViewModels
             _dataService = dataService;
             _depositCalculatorService = depositCalculatorService;
             _mapper = mapper;
+
+            CurrentDeposit = new DepositModel();
         }
 
         #endregion
@@ -61,6 +68,21 @@ namespace WPFClient.ViewModels
                 NotifyPropertyChanged(nameof(Currencies));
             }
         }
+        
+
+        public NameValuePair<int> SelectedCurrency
+        {
+            get 
+            { 
+                return _selectedCurrency;
+            }
+            set 
+            { 
+                _selectedCurrency = value;
+                NotifyPropertyChanged(nameof(SelectedCurrency));
+            }
+        }
+
         public DepositPlanModel SelectedDepositPlan
         {
             get
@@ -75,6 +97,33 @@ namespace WPFClient.ViewModels
                 NotifyPropertyChanged(nameof(Currencies));
             }
         }
+
+        public bool MonthlyPayoutChecked
+        {
+            get 
+            {
+                return _monthlyPayoutChecked;
+            }
+            set
+            {
+                _monthlyPayoutChecked = value;
+                NotifyPropertyChanged(nameof(MonthlyPayoutChecked));
+            }
+        }
+
+        public bool CapitalizedPayoutChecked
+        {
+            get
+            {
+                return _capitalizedPayoutChecked;
+            }
+            set
+            {
+                _capitalizedPayoutChecked = value;
+                NotifyPropertyChanged(nameof(CapitalizedPayoutChecked));
+            }
+        }
+
         public DepositModel CurrentDeposit 
         { get
             {
@@ -84,6 +133,19 @@ namespace WPFClient.ViewModels
             {
                 _currentDeposit = value;
                 NotifyPropertyChanged(nameof(CurrentDeposit));
+            }
+        }
+
+        public string IncomeText
+        {
+            get
+            {
+                return _incomeText;
+            }
+            set
+            {
+                _incomeText = value;
+                NotifyPropertyChanged(nameof(IncomeText));
             }
         }
 
@@ -105,17 +167,31 @@ namespace WPFClient.ViewModels
             if(SelectedDepositPlan is not null)
             {
                 Currencies = new ObservableCollection<NameValuePair<int>>(SelectedDepositPlan?.AvailableCurrencies);
+                SelectedCurrency = Currencies?.FirstOrDefault();
             }
+            MonthlyPayoutChecked = true;
         }
 
         public void CalculateIncome(object parameter = null)
         {
-            
+
+            CurrentDeposit.DepositPlan = SelectedDepositPlan;
+            CurrentDeposit.Currency = (Shared.Enums.Currencies)SelectedCurrency.Value;
+            CurrentDeposit.PaymentMethod = MonthlyPayoutChecked
+                ? Shared.Enums.PaymentMethod.MonthlyPayout
+                : Shared.Enums.PaymentMethod.CapitalizedPayout;
+
+            var income = _depositCalculatorService.CalculateDepositIncome(_mapper.Map<DepositDto>(CurrentDeposit));
+
+            IncomeText = @$"You selected Deposit Plan '{CurrentDeposit.DepositPlan.Name}', Sum {CurrentDeposit.Sum} and Term {CurrentDeposit.Term}. 
+Your gross incom will be equal {income} {CurrentDeposit.Currency.ToString()}.
+Note:The calculation is approximate and may vary depending on exact date of deposit agreement and actual number of deposit term's days!";
         }
 
         public void Reset(object parameter = null)
         {
-            
+            CurrentDeposit = null;
+            IncomeText = string.Empty;
         }
         public void Exit(object parameter = null)
         {

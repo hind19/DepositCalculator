@@ -17,6 +17,7 @@ namespace Persistence.Repositories
                      MaxTerm = 12,
                      MinSum = 1000,
                      MinTerm = 6,
+                     InterestRate = 12,
                      Name = "Basic",
                      AvailableCurrencies = new List<Shared.Enums.Currencies>
                      {
@@ -31,6 +32,7 @@ namespace Persistence.Repositories
                      MaxTerm = 24,
                      MinSum = 10000,
                      MinTerm = 3,
+                     InterestRate = 18,
                      Name = "Premium",
                      AvailableCurrencies = new List<Shared.Enums.Currencies>
                      {

@@ -60,9 +60,11 @@
             <TextBlock Text="Choose payment method" />
             <RadioButton Content="Monthly Payout"
                          GroupName="PaymentMethod"
+                         IsChecked="{Binding MonthlyPayoutChecked}"
                          Padding="3"/>
             <RadioButton Content="Capitalized Payout"
                          GroupName="PaymentMethod"
+                         IsChecked="{Binding CapitalizedPayoutChecked}"
                          Padding="3"/>
         </StackPanel>
         <StackPanel Orientation="Vertical"
@@ -72,7 +74,8 @@
             <TextBlock Text="Currency" />
             <ComboBox ItemsSource="{Binding Path=Currencies}"
                       SelectedValuePath="Value"
-                      DisplayMemberPath="Name" />
+                      DisplayMemberPath="Name"
+                      SelectedItem="{Binding SelectedCurrency}"/>
         </StackPanel>
 
 
@@ -81,7 +84,7 @@
                     Grid.ColumnSpan="4"
                     Margin="20,10">
             <TextBlock Text="Calculated income" />
-            <TextBlock Text="{Binding CurrentDeposit.IncomeText}" TextWrapping="Wrap"  />
+            <TextBlock Text="{Binding IncomeText}" TextWrapping="Wrap"  />
         </StackPanel>
         <StackPanel Orientation="Horizontal"
                     HorizontalAlignment="Center"
@@ -91,9 +94,11 @@
                     Grid.ColumnSpan="4"
                     Margin="20,10">
             <Button Content="Calculate"
+                    Command="{Binding CalculateIncomeCommand}"
                     Margin="20,10"
                     Width="100"/>
             <Button Content="Clear"
+                    Command="{Binding ResetCommand}"
                     Margin="20,10"
                     Width="100"/>
             <Button Content="Exit"

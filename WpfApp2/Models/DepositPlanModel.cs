@@ -15,7 +15,9 @@ public class DepositPlanModel
     public int  MinTerm { get; set; }
 
     public int MaxTerm { get; set; }
-    
+
+    public double InterestRate { get; set; }
+
     public List<NameValuePair<int>> AvailableCurrencies { get; set; } 
     
 }

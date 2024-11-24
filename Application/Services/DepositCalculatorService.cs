@@ -5,18 +5,44 @@ namespace Application.Services;
 
 public class DepositCalculatorService : IDepositCalculatorService
 {
-    public long CalculateDepositIncome(DepositDto depositDto)
+    public double CalculateDepositIncome(DepositDto depositDto)
     {
-        throw new NotImplementedException();
+        if (depositDto is null || !ValidateInput(depositDto))
+        {
+            throw new InvalidOperationException("Incorrect Data");
+        }
+
+        return depositDto.PaymentMethod == Shared.Enums.PaymentMethod.MonthlyPayout
+            ? CalculateMonthlyPayout(depositDto)
+            : CalculateCapitalizedPayout(depositDto);
     }
 
-    private long CalculateMonthlyPayout(DepositDto depositDto)
+    private bool ValidateInput(DepositDto depositDto)
     {
-        throw new NotImplementedException();
+        return depositDto.DepositPlan is not null
+            && depositDto.Sum != 0
+            && depositDto.Term != 0
+            && (depositDto.PaymentMethod == Shared.Enums.PaymentMethod.CapitalizedPayout || depositDto.PaymentMethod == Shared.Enums.PaymentMethod.MonthlyPayout);
+    }
+
+    private double CalculateMonthlyPayout(DepositDto depositDto)
+    {
+        var income = depositDto.Sum * depositDto.DepositPlan.InterestRate / 100 * depositDto.Term * 30 / 365; 
+        return Math.Round(income, 2);
     }
     
-    private long CalculateCapitalizedPayout(DepositDto depositDto)
+    private double CalculateCapitalizedPayout(DepositDto depositDto)
     {
-        throw new NotImplementedException();
+        double income = 0.0;
+        double currentSum = depositDto.Sum;
+        double monthIncome = 0.0;
+        for (var i = 1; i <= depositDto.Term; i++) 
+        {
+            monthIncome = currentSum * depositDto.DepositPlan.InterestRate / 100 * 30 /365;
+            income += monthIncome;
+            currentSum += monthIncome;
+        }
+
+        return Math.Round(income, 2);
     }
 }
