@@ -46,6 +46,9 @@
                     Margin="20,10">
             <TextBlock Text="Enter Sum of the Deposit" />
             <TextBox Text="{Binding CurrentDeposit.Sum}" />
+            <TextBlock Text="{Binding SumErrorText}"
+                       Foreground="Red"
+                       TextWrapping="Wrap" />
         </StackPanel>
         <StackPanel Grid.Row="1"
                     Grid.Column="1"
@@ -53,6 +56,9 @@
             <TextBlock Text="Enter the Term in months" />
             <TextBox MaxWidth="50" 
                      Text="{Binding CurrentDeposit.Term}"/>
+            <TextBlock Text="{Binding TermErrorText}"
+                       Foreground="Red"
+                       TextWrapping="Wrap"/>
         </StackPanel>
         <StackPanel Grid.Row="1"
                     Grid.Column="2"

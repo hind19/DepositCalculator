@@ -24,6 +24,8 @@ namespace WPFClient.ViewModels
         private bool _capitalizedPayoutChecked;
         private bool _monthlyPayoutChecked;
         private string _incomeText;
+        private string _sumErrorText;
+        private string _termErrorText;
         #endregion
 
         #region Constructors
@@ -149,6 +151,31 @@ namespace WPFClient.ViewModels
             }
         }
 
+        public string SumErrorText
+        {
+            get
+            {
+                return _sumErrorText;
+            }
+            set
+            {
+                _sumErrorText = value;
+                NotifyPropertyChanged(nameof(SumErrorText));
+            }
+        }
+
+        public string TermErrorText
+        {
+            get
+            {
+                return _termErrorText;
+            }
+            set
+            {
+                _termErrorText = value;
+                NotifyPropertyChanged(nameof(TermErrorText));
+            }
+        }
         #endregion
 
         #region Commands
@@ -181,11 +208,14 @@ namespace WPFClient.ViewModels
                 ? Shared.Enums.PaymentMethod.MonthlyPayout
                 : Shared.Enums.PaymentMethod.CapitalizedPayout;
 
-            var income = _depositCalculatorService.CalculateDepositIncome(_mapper.Map<DepositDto>(CurrentDeposit));
+            if(ValidateDeposit())
+            {
+                var income = _depositCalculatorService.CalculateDepositIncome(_mapper.Map<DepositDto>(CurrentDeposit));
 
-            IncomeText = @$"You selected Deposit Plan '{CurrentDeposit.DepositPlan.Name}', Sum {CurrentDeposit.Sum} {CurrentDeposit.Currency} and Term {CurrentDeposit.Term} months. 
+                IncomeText = @$"You selected Deposit Plan '{CurrentDeposit.DepositPlan.Name}', Sum {CurrentDeposit.Sum} {CurrentDeposit.Currency} and Term {CurrentDeposit.Term} months. 
 Your gross incom will be equal {income} {CurrentDeposit.Currency.ToString()}.
 Note:The calculation is approximate and may vary depending on exact date of deposit agreement and actual number of deposit term's days!";
+            }
         }
 
         public void Reset(object parameter = null)
@@ -198,11 +228,37 @@ Note:The calculation is approximate and may vary depending on exact date of depo
             Environment.Exit(0);
         }
         #endregion
-        
+
         #region Methods
 
-        
+        private bool ValidateDeposit()
+        {
+            var result = true;
+            if (CurrentDeposit.Sum == default)
+            {
+                SumErrorText = "Sum is Required or entered incorrectly";
+                result =  false;
+            }
+            else if (CurrentDeposit.Sum < CurrentDeposit.DepositPlan.MinTerm || CurrentDeposit.Sum > CurrentDeposit.DepositPlan.MaxSum) 
+            {
+                SumErrorText = "Enered Sum is not in the range allowed for this deposit plan";
+                result = false;
+            }
+            if (CurrentDeposit.Term == default)
+            {
+                TermErrorText = "Term is Required or entered incorrectly";
+                result = false;
+            }
+            else if (CurrentDeposit.Term < CurrentDeposit.DepositPlan.MinTerm || CurrentDeposit.Term > CurrentDeposit.DepositPlan.MaxTerm)
+            {
+                TermErrorText = "Enered Term is not in the range allowed for this deposit plan";
+                result = false;
+            }
+            return result;
+        }
 
         #endregion
     }
+
+
 }
