@@ -5,6 +5,7 @@ namespace WPFClient.ViewModels
 {
     internal class BaseViewModel : INotifyPropertyChanged
     {
+        #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
 
         public virtual void OnPropertyChanged(string propertyName)
@@ -19,5 +20,8 @@ namespace WPFClient.ViewModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        #endregion
+
+       
     }
 }
