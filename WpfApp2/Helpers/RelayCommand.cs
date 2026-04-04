@@ -9,13 +9,13 @@ namespace WPFClient.Helpers
 {
     public class RelayCommand : ICommand
     {
-        public Predicate<object> CanExecuteDelegate { get; set; }
-        public Action<object> ExecuteDelegate { get; set; }
+        private readonly Predicate<object> _canExecuteDelegate;
+        private readonly Action<object> _executeDelegate;
 
-
-        public RelayCommand(Action<object> action)
+        public RelayCommand(Action<object> action, Predicate<object> canExecute = null)
         {
-            ExecuteDelegate = action;
+            _executeDelegate = action;
+            _canExecuteDelegate = canExecute;
         }
 
         public event EventHandler CanExecuteChanged
@@ -25,18 +25,18 @@ namespace WPFClient.Helpers
         }
         public bool CanExecute(object parameter)
         {
-            if (CanExecuteDelegate is not null)
+            if (_canExecuteDelegate is not null)
             {
-                return CanExecuteDelegate(parameter);
+                return _canExecuteDelegate(parameter);
             }
             return true;
         }
 
         public void Execute(object parameter)
         {
-            if (ExecuteDelegate is not null)
+            if (_executeDelegate is not null)
             {
-                ExecuteDelegate(parameter);
+                _executeDelegate(parameter);
             }
         }
     }
