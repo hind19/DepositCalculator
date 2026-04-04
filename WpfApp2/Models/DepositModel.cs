@@ -4,6 +4,11 @@ namespace WpfApp2.Models;
 
 public class DepositModel
 {
+    public DepositModel()
+    {
+        DepositPlan = new DepositPlanModel();
+    }
+
     public DepositPlanModel DepositPlan { get; set; }
     
     public int Sum { get; set; }
