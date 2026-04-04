@@ -4,5 +4,5 @@ namespace Application.Interfaces;
 
 public interface IDepositCalculatorService
 {
-    double CalculateDepositIncome(DepositDto depositDto);
+    decimal CalculateDepositIncome(DepositDto depositDto);
 }

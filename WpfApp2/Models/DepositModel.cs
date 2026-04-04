@@ -15,7 +15,7 @@ public class DepositModel
     
     public int Term { get; set; }
     
-    public double Income { get; set; }
+    public decimal Income { get; set; }
     
     public Currencies Currency { get; set; }
     

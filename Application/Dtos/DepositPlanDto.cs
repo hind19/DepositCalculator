@@ -8,7 +8,7 @@ public class DepositPlanDto
 
     public string Name { get; set; }
 
-    public double InterestRate { get; set; }
+    public decimal InterestRate { get; set; }
 
     public int MinSum { get; set; }
 

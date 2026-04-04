@@ -5,7 +5,7 @@ namespace Application.Services;
 
 public class DepositCalculatorService : IDepositCalculatorService
 {
-    public double CalculateDepositIncome(DepositDto depositDto)
+    public decimal CalculateDepositIncome(DepositDto depositDto)
     {
         if (depositDto is null || !ValidateInput(depositDto))
         {
@@ -25,20 +25,20 @@ public class DepositCalculatorService : IDepositCalculatorService
             && (depositDto.PaymentMethod == Shared.Enums.PaymentMethod.CapitalizedPayout || depositDto.PaymentMethod == Shared.Enums.PaymentMethod.MonthlyPayout);
     }
 
-    private double CalculateMonthlyPayout(DepositDto depositDto)
+    private decimal CalculateMonthlyPayout(DepositDto depositDto)
     {
-        var income = depositDto.Sum * depositDto.DepositPlan.InterestRate / 100 * depositDto.Term * 30 / 365; 
+        var income = depositDto.Sum * depositDto.DepositPlan.InterestRate / 100 * depositDto.Term * 30 / 365;
         return Math.Round(income, 2);
     }
-    
-    private double CalculateCapitalizedPayout(DepositDto depositDto)
+
+    private decimal CalculateCapitalizedPayout(DepositDto depositDto)
     {
-        double income = 0.0;
-        double currentSum = depositDto.Sum;
-        double monthIncome = 0.0;
-        for (var i = 1; i <= depositDto.Term; i++) 
+        decimal income = 0m;
+        decimal currentSum = depositDto.Sum;
+        decimal monthIncome = 0m;
+        for (var i = 1; i <= depositDto.Term; i++)
         {
-            monthIncome = currentSum * depositDto.DepositPlan.InterestRate / 100 * 30 /365;
+            monthIncome = currentSum * depositDto.DepositPlan.InterestRate / 100 * 30 / 365;
             income += monthIncome;
             currentSum += monthIncome;
         }
