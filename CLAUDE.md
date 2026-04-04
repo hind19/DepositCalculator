@@ -17,6 +17,13 @@ dotnet run --project WpfApp2/WPFClient.csproj
 
 There are no automated tests in this project.
 
+## Technology Stack
+
+- **UI Framework**: WPF (Windows Presentation Foundation), .NET
+- **Pattern**: MVVM
+- **IoC Container**: Castle.Windsor
+- **Object Mapping**: AutoMapper
+
 ## Architecture
 
 This is a WPF desktop application for calculating bank deposit income, structured in four projects:
@@ -41,3 +48,7 @@ There are two separate DTO layers: `Application.Dtos` (used by the application s
 - **Calculation**: Two payout methods — `MonthlyPayout` (simple interest: `sum * rate * days / 365`) and `CapitalizedPayout` (compound interest, iterated monthly). Both assume 30 days/month.
 - **Currencies displayed per plan**: When the user selects a deposit plan, `SelectedDepositPlan` setter in the ViewModel directly rebuilds the `Currencies` collection from `plan.AvailableCurrencies`.
 - **`IDataService.GetCurrencies()`** is not yet implemented (throws `NotImplementedException`).
+
+## Workflow Rules
+- NEVER push commits automatically
+- When I ask you 'create commit' or 'prepare commit' you should stage elements and add the commit message to the appropriate indow of IDE.
