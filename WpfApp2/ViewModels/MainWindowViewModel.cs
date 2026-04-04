@@ -220,12 +220,12 @@ Note:The calculation is approximate and may vary depending on exact date of depo
 
         public void Reset(object parameter = null)
         {
-            CurrentDeposit = null;
+            CurrentDeposit = new DepositModel();
             IncomeText = string.Empty;
         }
         public void Exit(object parameter = null)
         {
-            Environment.Exit(0);
+            System.Windows.Application.Current.Shutdown();
         }
         #endregion
 
@@ -239,7 +239,7 @@ Note:The calculation is approximate and may vary depending on exact date of depo
                 SumErrorText = "Sum is Required or entered incorrectly";
                 result =  false;
             }
-            else if (CurrentDeposit.Sum < CurrentDeposit.DepositPlan.MinTerm || CurrentDeposit.Sum > CurrentDeposit.DepositPlan.MaxSum) 
+            else if (CurrentDeposit.Sum < CurrentDeposit.DepositPlan.MinSum || CurrentDeposit.Sum > CurrentDeposit.DepositPlan.MaxSum)
             {
                 SumErrorText = "Enered Sum is not in the range allowed for this deposit plan";
                 result = false;
