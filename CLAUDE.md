@@ -51,4 +51,5 @@ There are two separate DTO layers: `Application.Dtos` (used by the application s
 
 ## Workflow Rules
 - NEVER push commits automatically
-- When I ask you 'create commit' or 'prepare commit' you should stage elements and add the commit message to the appropriate indow of IDE.
+- When I ask you 'create commit' or 'prepare commit' you should stage elements and add the commit message to the appropriate window of IDE.
+- Never refactor code unless explicitly asked
