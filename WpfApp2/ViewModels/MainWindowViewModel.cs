@@ -1,6 +1,5 @@
 ﻿using Application.Dtos;
 using Application.Interfaces;
-using AutoMapper;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using WpfApp2.Helpers;
@@ -14,8 +13,8 @@ namespace WPFClient.ViewModels
         #region Fields
         private readonly IDataService _dataService;
         private readonly IDepositCalculatorService _depositCalculatorService;
-        private readonly IMapper _mapper;
 
+        private IReadOnlyCollection<DepositPlanDto> _depositPlanDtos;
         private ObservableCollection<DepositPlanModel> _depositPlans;
         private DepositPlanModel _depositPlan;
         private ObservableCollection<NameValuePair<int>> _currencies;
@@ -31,8 +30,7 @@ namespace WPFClient.ViewModels
         #region Constructors
 
         public MainWindowViewModel(IDataService dataService,
-            IDepositCalculatorService depositCalculatorService,
-            IMapper mapper)
+            IDepositCalculatorService depositCalculatorService)
         {
             LoadedCommand = new RelayCommand(Loaded);
             CalculateIncomeCommand = new RelayCommand(CalculateIncome);
@@ -40,7 +38,6 @@ namespace WPFClient.ViewModels
             ExitCommand = new RelayCommand(Exit);
             _dataService = dataService;
             _depositCalculatorService = depositCalculatorService;
-            _mapper = mapper;
 
             CurrentDeposit = new DepositModel();
         }
@@ -188,8 +185,9 @@ namespace WPFClient.ViewModels
         #region CommandHandlers
         public void Loaded(object parameter = null)
         {
+            _depositPlanDtos = _dataService.GetDepositPlans();
             DepositPlans = new ObservableCollection<DepositPlanModel>(
-                _mapper.Map<IReadOnlyCollection<DepositPlanModel>>(_dataService.GetDepositPlans()));
+                _depositPlanDtos.Select(d => new DepositPlanModel(d)));
             SelectedDepositPlan = DepositPlans?.FirstOrDefault();
             if(SelectedDepositPlan is not null)
             {
@@ -201,7 +199,6 @@ namespace WPFClient.ViewModels
 
         public void CalculateIncome(object parameter = null)
         {
-
             CurrentDeposit.DepositPlan = SelectedDepositPlan;
             CurrentDeposit.Currency = (Shared.Enums.Currencies)SelectedCurrency.Value;
             CurrentDeposit.PaymentMethod = MonthlyPayoutChecked
@@ -210,9 +207,17 @@ namespace WPFClient.ViewModels
 
             if(ValidateDeposit())
             {
-                var income = _depositCalculatorService.CalculateDepositIncome(_mapper.Map<DepositDto>(CurrentDeposit));
+                var depositDto = new DepositDto
+                {
+                    DepositPlan = _depositPlanDtos?.FirstOrDefault(d => d.Id == CurrentDeposit.DepositPlan?.Id),
+                    Sum = CurrentDeposit.Sum,
+                    Term = CurrentDeposit.Term,
+                    Currency = CurrentDeposit.Currency,
+                    PaymentMethod = CurrentDeposit.PaymentMethod
+                };
+                var income = _depositCalculatorService.CalculateDepositIncome(depositDto);
 
-                IncomeText = @$"You selected Deposit Plan '{CurrentDeposit.DepositPlan.Name}', Sum {CurrentDeposit.Sum} {CurrentDeposit.Currency} and Term {CurrentDeposit.Term} months. 
+                IncomeText = @$"You selected Deposit Plan '{CurrentDeposit.DepositPlan.Name}', Sum {CurrentDeposit.Sum} {CurrentDeposit.Currency} and Term {CurrentDeposit.Term} months.
 Your gross incom will be equal {income} {CurrentDeposit.Currency.ToString()}.
 Note:The calculation is approximate and may vary depending on exact date of deposit agreement and actual number of deposit term's days!";
             }

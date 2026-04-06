@@ -1,22 +1,16 @@
-﻿using Shared.Enums;
+﻿using Persistence.Dtos;
+using Shared.Enums;
 
 namespace Application.Dtos;
 
-public class DepositPlanDto
+public class DepositPlanDto(DepositPlanDtoDomain domain)
 {
-    public Guid Id { get; set; }
-
-    public string Name { get; set; }
-
-    public decimal InterestRate { get; set; }
-
-    public int MinSum { get; set; }
-
-    public int MaxSum { get; set; }
-
-    public int MinTerm { get; set; }
-
-    public int MaxTerm { get; set; }
-
-    public List<Currencies> AvailableCurrencies { get; set; }
+    public Guid Id { get; } = domain.Id;
+    public string Name { get; } = domain.Name;
+    public decimal InterestRate { get; } = domain.InterestRate;
+    public int MinSum { get; } = domain.MinSum;
+    public int MaxSum { get; } = domain.MaxSum;
+    public int MinTerm { get; } = domain.MinTerm;
+    public int MaxTerm { get; } = domain.MaxTerm;
+    public List<Currencies> AvailableCurrencies { get; } = domain.AvailableCurrencies;
 }
