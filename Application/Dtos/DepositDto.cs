@@ -10,8 +10,6 @@ public class DepositDto
 
     public int Term { get; set; }
 
-    public decimal Income { get; set; }
-
     public Currencies Currency { get; set; }
 
     public PaymentMethod PaymentMethod { get; set; }

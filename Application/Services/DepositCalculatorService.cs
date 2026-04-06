@@ -21,8 +21,7 @@ public class DepositCalculatorService : IDepositCalculatorService
     {
         return depositDto.DepositPlan is not null
             && depositDto.Sum != 0
-            && depositDto.Term != 0
-            && (depositDto.PaymentMethod == Shared.Enums.PaymentMethod.CapitalizedPayout || depositDto.PaymentMethod == Shared.Enums.PaymentMethod.MonthlyPayout);
+            && depositDto.Term != 0;
     }
 
     private decimal CalculateMonthlyPayout(DepositDto depositDto)
@@ -44,8 +43,5 @@ public class DepositCalculatorService : IDepositCalculatorService
         }
 
         return Math.Round(income, 2);
-
-        // test changes
-
     }
 }

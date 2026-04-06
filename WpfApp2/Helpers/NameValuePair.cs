@@ -6,11 +6,6 @@ public class NameValuePair <T>
     
     public T Value {get; set; }
 
-    public NameValuePair()
-    {
-        
-    }
-
     public NameValuePair(string name, T value)
     {
         Name = name;

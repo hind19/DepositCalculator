@@ -4,19 +4,19 @@ namespace Persistence.Dtos;
 
 public class DepositPlanDtoDomain
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; init; }
 
-    public string Name { get; set; }
+    public string Name { get; init; }
 
-    public decimal InterestRate { get; set; }
+    public decimal InterestRate { get; init; }
 
-    public int MinSum { get; set; }
+    public int MinSum { get; init; }
 
-    public int MaxSum { get; set; }
+    public int MaxSum { get; init; }
 
-    public int MinTerm { get; set; }
+    public int MinTerm { get; init; }
 
-    public int MaxTerm { get; set; }
+    public int MaxTerm { get; init; }
 
-    public List<Currencies> AvailableCurrencies { get; set; }
+    public List<Currencies> AvailableCurrencies { get; init; }
 }

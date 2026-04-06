@@ -92,9 +92,9 @@ namespace WPFClient.ViewModels
             {
                 _depositPlan = value;
                 _currencies = new ObservableCollection<NameValuePair<int>>(value.AvailableCurrencies);
-                _selectedCurrency = _currencies.FirstOrDefault();
                 NotifyPropertyChanged(nameof(SelectedDepositPlan));
                 NotifyPropertyChanged(nameof(Currencies));
+                _selectedCurrency = _currencies.FirstOrDefault();
                 NotifyPropertyChanged(nameof(SelectedCurrency));
             }
         }
@@ -217,11 +217,17 @@ namespace WPFClient.ViewModels
                     Currency = CurrentDeposit.Currency,
                     PaymentMethod = CurrentDeposit.PaymentMethod
                 };
-                var income = _depositCalculatorService.CalculateDepositIncome(depositDto);
-
-                IncomeText = @$"You selected Deposit Plan '{CurrentDeposit.DepositPlan.Name}', Sum {CurrentDeposit.Sum} {CurrentDeposit.Currency} and Term {CurrentDeposit.Term} months.
+                try
+                {
+                    var income = _depositCalculatorService.CalculateDepositIncome(depositDto);
+                    IncomeText = @$"You selected Deposit Plan '{CurrentDeposit.DepositPlan.Name}', Sum {CurrentDeposit.Sum} {CurrentDeposit.Currency} and Term {CurrentDeposit.Term} months.
 Your gross incom will be equal {income} {CurrentDeposit.Currency.ToString()}.
 Note:The calculation is approximate and may vary depending on exact date of deposit agreement and actual number of deposit term's days!";
+                }
+                catch (InvalidOperationException ex)
+                {
+                    IncomeText = ex.Message;
+                }
             }
         }
 
@@ -229,6 +235,8 @@ Note:The calculation is approximate and may vary depending on exact date of depo
         {
             CurrentDeposit = new DepositModel();
             IncomeText = string.Empty;
+            SumErrorText = string.Empty;
+            TermErrorText = string.Empty;
         }
         public void Exit(object parameter = null)
         {
@@ -240,6 +248,8 @@ Note:The calculation is approximate and may vary depending on exact date of depo
 
         private bool ValidateDeposit()
         {
+            SumErrorText = string.Empty;
+            TermErrorText = string.Empty;
             var result = true;
             if (CurrentDeposit.Sum == default)
             {
