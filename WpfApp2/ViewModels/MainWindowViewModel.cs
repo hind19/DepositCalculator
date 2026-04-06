@@ -92,8 +92,10 @@ namespace WPFClient.ViewModels
             {
                 _depositPlan = value;
                 _currencies = new ObservableCollection<NameValuePair<int>>(value.AvailableCurrencies);
+                _selectedCurrency = _currencies.FirstOrDefault();
                 NotifyPropertyChanged(nameof(SelectedDepositPlan));
                 NotifyPropertyChanged(nameof(Currencies));
+                NotifyPropertyChanged(nameof(SelectedCurrency));
             }
         }
 
