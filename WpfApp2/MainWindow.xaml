@@ -44,8 +44,9 @@
                     Grid.Column="0"
                     Margin="20,10">
             <TextBlock Text="Enter Sum of the Deposit" />
-            <TextBox Text="{Binding CurrentDeposit.Sum}" />
-            <TextBlock Text="{Binding SumErrorText}"
+            <TextBox x:Name="SumTextBox"
+                     Text="{Binding CurrentDeposit.Sum, ValidatesOnDataErrors=True, UpdateSourceTrigger=LostFocus}" />
+            <TextBlock Text="{Binding ElementName=SumTextBox, Path=(Validation.Errors)/ErrorContent}"
                        Foreground="Red"
                        TextWrapping="Wrap" />
         </StackPanel>
@@ -53,9 +54,10 @@
                     Grid.Column="1"
                     Margin="20,10">
             <TextBlock Text="Enter the Term in months" />
-            <TextBox MaxWidth="50" 
-                     Text="{Binding CurrentDeposit.Term}"/>
-            <TextBlock Text="{Binding TermErrorText}"
+            <TextBox x:Name="TermTextBox"
+                     MaxWidth="50"
+                     Text="{Binding CurrentDeposit.Term, ValidatesOnDataErrors=True, UpdateSourceTrigger=LostFocus}" />
+            <TextBlock Text="{Binding ElementName=TermTextBox, Path=(Validation.Errors)/ErrorContent}"
                        Foreground="Red"
                        TextWrapping="Wrap"/>
         </StackPanel>

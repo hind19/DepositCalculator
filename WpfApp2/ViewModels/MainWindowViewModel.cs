@@ -1,6 +1,7 @@
 ﻿using Application.Dtos;
 using Application.Interfaces;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows.Input;
 using WpfApp2.Helpers;
 using WpfApp2.Models;
@@ -23,8 +24,6 @@ namespace WPFClient.ViewModels
         private bool _capitalizedPayoutChecked;
         private bool _monthlyPayoutChecked;
         private string _incomeText;
-        private string _sumErrorText;
-        private string _termErrorText;
         #endregion
 
         #region Constructors
@@ -91,6 +90,7 @@ namespace WPFClient.ViewModels
             set
             {
                 _depositPlan = value;
+                CurrentDeposit.DepositPlan = value;
                 _currencies = new ObservableCollection<NameValuePair<int>>(value.AvailableCurrencies);
                 NotifyPropertyChanged(nameof(SelectedDepositPlan));
                 NotifyPropertyChanged(nameof(Currencies));
@@ -149,32 +149,6 @@ namespace WPFClient.ViewModels
                 NotifyPropertyChanged(nameof(IncomeText));
             }
         }
-
-        public string SumErrorText
-        {
-            get
-            {
-                return _sumErrorText;
-            }
-            set
-            {
-                _sumErrorText = value;
-                NotifyPropertyChanged(nameof(SumErrorText));
-            }
-        }
-
-        public string TermErrorText
-        {
-            get
-            {
-                return _termErrorText;
-            }
-            set
-            {
-                _termErrorText = value;
-                NotifyPropertyChanged(nameof(TermErrorText));
-            }
-        }
         #endregion
 
         #region Commands
@@ -207,7 +181,11 @@ namespace WPFClient.ViewModels
                 ? Shared.Enums.PaymentMethod.MonthlyPayout
                 : Shared.Enums.PaymentMethod.CapitalizedPayout;
 
-            if(ValidateDeposit())
+            CurrentDeposit.MarkAsEdited();
+            NotifyPropertyChanged(nameof(CurrentDeposit));
+
+            IDataErrorInfo errorInfo = CurrentDeposit;
+            if (errorInfo[nameof(DepositModel.Sum)] is null && errorInfo[nameof(DepositModel.Term)] is null)
             {
                 var depositDto = new DepositDto
                 {
@@ -235,45 +213,11 @@ Note:The calculation is approximate and may vary depending on exact date of depo
         {
             CurrentDeposit = new DepositModel();
             IncomeText = string.Empty;
-            SumErrorText = string.Empty;
-            TermErrorText = string.Empty;
         }
         public void Exit(object parameter = null)
         {
             System.Windows.Application.Current.Shutdown();
         }
-        #endregion
-
-        #region Methods
-
-        private bool ValidateDeposit()
-        {
-            SumErrorText = string.Empty;
-            TermErrorText = string.Empty;
-            var result = true;
-            if (CurrentDeposit.Sum == default)
-            {
-                SumErrorText = "Sum is Required or entered incorrectly";
-                result =  false;
-            }
-            else if (CurrentDeposit.Sum < CurrentDeposit.DepositPlan.MinSum || CurrentDeposit.Sum > CurrentDeposit.DepositPlan.MaxSum)
-            {
-                SumErrorText = "Enered Sum is not in the range allowed for this deposit plan";
-                result = false;
-            }
-            if (CurrentDeposit.Term == default)
-            {
-                TermErrorText = "Term is Required or entered incorrectly";
-                result = false;
-            }
-            else if (CurrentDeposit.Term < CurrentDeposit.DepositPlan.MinTerm || CurrentDeposit.Term > CurrentDeposit.DepositPlan.MaxTerm)
-            {
-                TermErrorText = "Enered Term is not in the range allowed for this deposit plan";
-                result = false;
-            }
-            return result;
-        }
-
         #endregion
     }
 

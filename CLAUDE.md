@@ -44,7 +44,7 @@ There are two separate DTO layers: `Application.Dtos` (used by the application s
 ### Key Design Notes
 
 - **DI**: Castle.Windsor is used only in `WPFClient`. The `Application` layer uses a custom `DependencyResolver<T>` static class (not Windsor) to resolve `IDepositPlanRepository` — this is intentional per its comment ("Simplified solution instead of DI container").
-- **Validation**: Input validation happens in two places: `MainWindowViewModel.ValidateDeposit()` (UI-side, sets error text properties) and `DepositCalculatorService.ValidateInput()` (service-side, throws on invalid input).
+- **Validation**: Input validation happens in two places: `DepositModel` implements `IDataErrorInfo` (UI-side binding validation — uses `_sumEdited`/`_termEdited` flags so errors only show after the field is touched or `MarkAsEdited()` is called) and `DepositCalculatorService.ValidateInput()` (service-side, throws on invalid input). The ViewModel checks `IDataErrorInfo` indexer results before calling the service.
 - **Calculation**: Two payout methods — `MonthlyPayout` (simple interest: `sum * rate * days / 365`) and `CapitalizedPayout` (compound interest, iterated monthly). Both assume 30 days/month.
 - **Currencies displayed per plan**: When the user selects a deposit plan, `SelectedDepositPlan` setter in the ViewModel directly rebuilds the `Currencies` collection from `plan.AvailableCurrencies`.
 - **`IDataService.GetCurrencies()`** is not yet implemented (throws `NotImplementedException`).
